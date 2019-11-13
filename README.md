@@ -22,6 +22,7 @@
     ```
     更多用法：
     你可以修改```wjx.py```中的```set_data```方法来自定义递交数据的规则
+
     例如：
     ```
         def set_data(self):
@@ -30,9 +31,16 @@
         }
     ```
 
+## Dependencies
+
+```
+pip install requests
+```
+
 ## Contribution & Feedback
 
-目前脚本仅局限于单向选择题和多选选择题的自动填写，如果你有更好的建议...
+目前脚本仅局限于单项选择题和多项选择题的自动填写，如果你有更好的建议...
 
 :octocat: @Jocoboy 
+
 :e-mail: Jocoboy@outlook.com

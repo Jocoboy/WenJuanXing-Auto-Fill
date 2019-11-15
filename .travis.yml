@@ -1,0 +1,16 @@
+language: python
+python:
+  - "3.7"
+
+install:
+  - pip install requests
+
+before_script:
+  - export MPLBACKEND=Agg
+
+script:
+  - MPLBACKEND=Agg python my_wjx.py
+
+branches:
+  only:
+    - master

@@ -1,5 +1,7 @@
 # 问卷星:star:自动填写脚本
 
+[![Build Status](https://travis-ci.org/Jocoboy/WengJuanXing-Auto-Fill.svg?branch=master)](https://travis-ci.org/Jocoboy/WengJuanXing-Auto-Fill) ![GitHub issues](https://img.shields.io/github/issues/Jocoboy/WengJuanXing-Auto-Fill?style=plastic) ![GitHub](https://img.shields.io/github/license/Jocoboy/WengJuanXing-Auto-Fill?style=plastic)
+
 ## :mag:Preview
 
 <img src="preview.png" style="width: 100%;" align="center" />

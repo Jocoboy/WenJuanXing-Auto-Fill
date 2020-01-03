@@ -3,19 +3,21 @@ import requests
 import re
 import time
 
-class WengJuanXing:
 
-    def __init__(self, url, no, exp):
+class WenJuanXing:
+
+    def __init__(self, url, no, subdata):
         self.wj_url = url
         self.no = int(no)
-        self.exp = exp
+        self.subdata = subdata
         self.post_url = None
         self.header = None
         self.cookie = None
 
     def get_response(self):
         '''
-        Get response from wj_url.
+        Access the wj_url and get the inner html.
+        :return: response from the get request
         '''
         response = requests.get(url=self.wj_url, headers=self.header)
         self.cookie = response.cookies
@@ -23,41 +25,57 @@ class WengJuanXing:
 
     def get_ktimes(self):
         ''' 
-        Generate arguments[ktimes] (randomly) of post_url.
+        Generate an integer as arguments[ktimes] to construct the post_url.
+        :return: ktimes - an integer
         '''
-        return random.randint(5, 18)
+        return random.randint(15, 50)
 
     def get_jqnonce(self, response):
         ''' 
-        Generate arguments[jqnonce] (regularly) of post_url.
+        Search for the arguments[jqnonce] from the response text through regular expression to construct the post_url.
+        :param response: response from the get request
+        :return: jqnonce - matched group
         '''
         jqnonce = re.search(r'.{8}-.{4}-.{4}-.{4}-.{12}', response.text)
         return jqnonce.group()
+        # try:
+        #     return jqnonce.group()
+        # except AttributeError:
+        #     return None
 
     def get_start_time(self, response):
         ''' 
-        Generate arguments[starttime] (regularly) of post_url.
+        Search for the arguments[start_time] from the response text through regular expression to construct the post_url.
+        :param response: response from the get request
+        :return: start_time - matched group
         '''
         start_time = re.search(r'\d+?/\d+?/\d+?\s\d+?:\d{2}', response.text)
         return start_time.group()
 
     def get_rn(self, response):
         ''' 
-        Generate arguments[rn] (regularly) of post_url.
+        Search for the arguments[rn] from the response text through regular expression to construct the post_url.
+        :param response: response from the get request
+        :return: rn - matched group
         '''
         rn = re.search(r'\d{9,10}\.\d{8}', response.text)
         return rn.group()
 
     def get_id(self, response):
         ''' 
-        Generate arguments[id] (regularly) of post_url.
+        Search for the arguments[id] from the response text through regular expression to construct the post_url.
+        :param response: response from the get request
+        :return: id - matched group
         '''
         id = re.search(r'\d{8}', response.text)
         return id.group()
 
     def get_jqsign(self, ktimes, jqnonce):
         '''
-        Generate jqsign referring to ktimes and jqsign.
+        Encrypt arguments[jqsign] with arguments[ktimes] and arguments[jqnonce] to construct the post_url.
+        :param ktimes: ktimes - an integer
+        :param jqnonce: jqnonce - matched group
+        :return: jqnonce - a string
         '''
         result = []
         b = ktimes % 10
@@ -69,6 +87,9 @@ class WengJuanXing:
         return ''.join(result)
 
     def set_post_url(self):
+        '''
+        The main function to construct the post_url.
+        '''
         self.set_header()
         response = self.get_response()
         ktimes = self.get_ktimes()
@@ -87,7 +108,7 @@ class WengJuanXing:
 
     def set_header(self):
         '''
-        Set header refer to ip(generated randomly).
+        Generate ip randomly, segmented control needed.
         '''
         ip = '{}.{}.{}.{}'.format(112, random.randint(
             64, 68), random.randint(0, 255), random.randint(0, 255))
@@ -99,13 +120,23 @@ class WengJuanXing:
 
     def set_data(self):
         '''
-        Multiple Choice Format: {ProblemId}${OptionId}
+        One-choice Format: [ProblemId]$[OptionId]
+
+        Multiple-choice Format: [ProblemId]$[OptionId|OptionId...]
+
+        Fill-in-the-blanks Format: [ProblemId]$[ContentText]
+
+        use '{' as separators
         '''
         self.data = {
-            'submitdata': self.exp
+            'submitdata': self.subdata
         }
 
     def post_data(self):
+        '''
+        Send datas to the server.
+        :return: result from the server
+        '''
         self.set_data()
         response = requests.post(
             url=self.post_url, data=self.data, headers=self.header, cookies=self.cookie)
@@ -119,6 +150,3 @@ class WengJuanXing:
     def mul_run(self):
         for i in range(self.no):
             self.run()
-
-
-

@@ -9,7 +9,7 @@ before_script:
   - export MPLBACKEND=Agg
 
 script:
-  - MPLBACKEND=Agg python my_wjx.py
+  - MPLBACKEND=Agg python main.py
 
 branches:
   only:
